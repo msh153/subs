@@ -241,25 +241,24 @@
   }
   var listener = window.Lampa.Subscribe();
   function getSubtitleList() {
-    subsUp.forEach(function (element, p) {
-      if (element.index !== -1) {
-        var from = element;
-        element.title = p + ' / ' + normalName(from.language && from.label ? from.language + ' / ' + from.label : from.language || from.label || window.Lampa.Lang.translate('player_unknown'));
-      }
-    });
-    $('.player-panel__subsUp').on('hover:enter', function () {
-      if (subsUp.length) {
-        if (subsUp[0].index !== -1) {
-          var any_select = subsUp.find(function (s) {
-            return s.selected;
-          });
-          window.Lampa.Arrays.insert(subsUp, 0, {
-            title: window.Lampa.Lang.translate('player_disabled'),
-            selected: any_select ? false : true,
-            index: -1
-          });
+    if (customSubsUp) {
+      customSubsUp.forEach(function (element, p) {
+        if (element.index !== -1) {
+          var from = element;
+          element.title = p + ' / ' + normalName(from.language && from.label ? from.language + ' / ' + from.label : from.language || from.label || window.Lampa.Lang.translate('player_unknown'));
         }
-      }
+      });
+      var any_select = subsUp.find(function (s) {
+        return s.selected;
+      });
+      window.Lampa.Arrays.insert(customSubsUp, 0, {
+        title: window.Lampa.Lang.translate('player_disabled'),
+        selected: any_select ? false : true,
+        index: -1
+      });
+    }
+    $('.player-panel__subsUp').on('hover:enter', function () {
+      if (subsUp.length) ;
       var enabled = window.Lampa.Controller.enabled();
       var index = -1;
       if (customSubsUp[0]) {
