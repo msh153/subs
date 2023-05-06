@@ -142,12 +142,8 @@
     listener.follow('subsviewUp', function (e) {
       setSubtitleUp();
     });
-    var subtitles;
     customsubsUp.listener.follow('subtitleUp', function (e) {
-      if (!subtitles) subtitles = new DOMParser().parseFromString(window.Lampa.Template.all().player_video, "text/html").querySelector('.player-video__subtitles.on-top');
-      $('> .player-video__subtitles-text', subtitles).html(e.text ? e.text : '&nbsp;').css({
-        display: e.text ? 'inline-block' : 'none'
-      });
+      document.querySelector('.on-top .player-video__subtitles-text').outerHTML = "<div class=\"player-video__subtitles-text\">".concat(e.text, "</div>");
     });
     var video = window.Lampa.PlayerVideo.video();
     video.addEventListener('timeupdate', function () {
@@ -220,14 +216,16 @@
     getSubtitleList();
   }
   function setSubtitleUp() {
-    var subtitle = new DOMParser().parseFromString(window.Lampa.Template.all().player_video, "text/xml").querySelector('.player-video__subtitles').cloneNode(true);
+    if (document.querySelector('.on-top .player-video__subtitles-text')) return;
+    var subtitle = new DOMParser().parseFromString(window.Lampa.Template.all().player_video, "text/html").querySelector('.player-video__subtitles').cloneNode(true);
     subtitle.classList.add('on-top');
     subtitle.classList.remove('hide');
-    var player = new DOMParser().parseFromString(window.Lampa.Template.all().player_video, "text/xml").querySelector('.player-video').cloneNode(true);
+    // var player = new DOMParser().parseFromString(window.Lampa.Template.all().player_video, "text/html").querySelector('.player-video').cloneNode(true)
 
-    /*!!!!!*/
-    player.insertBefore(subtitle, player.querySelector('.player-video__subtitles'));
-    window.Lampa.Template.all().player_video = new XMLSerializer().serializeToString(player);
+    // /*!!!!!*/
+    // player.insertBefore(subtitle, player.querySelector('.player-video__subtitles'));
+    // window.Lampa.Template.all().player_video = new XMLSerializer().serializeToString(player);
+    document.querySelector('.player-video').insertBefore(subtitle, document.querySelector('.player-video__subtitles'));
   }
   function placeOnPanel() {
     var subs = window.Lampa.Template.get('player_panel')[0].querySelectorAll('div.player-panel__subs')[0].cloneNode(true);
@@ -243,6 +241,12 @@
   }
   var listener = window.Lampa.Subscribe();
   function getSubtitleList() {
+    subsUp.forEach(function (element, p) {
+      if (element.index !== -1) {
+        var from = element;
+        element.title = p + ' / ' + normalName(from.language && from.label ? from.language + ' / ' + from.label : from.language || from.label || window.Lampa.Lang.translate('player_unknown'));
+      }
+    });
     $('.player-panel__subsUp').on('hover:enter', function () {
       if (subsUp.length) {
         if (subsUp[0].index !== -1) {
@@ -255,12 +259,6 @@
             index: -1
           });
         }
-        subsUp.forEach(function (element, p) {
-          if (element.index !== -1) {
-            var from = element;
-            element.title = p + ' / ' + normalName(from.language && from.label ? from.language + ' / ' + from.label : from.language || from.label || window.Lampa.Lang.translate('player_unknown'));
-          }
-        });
       }
       var enabled = window.Lampa.Controller.enabled();
       var index = -1;
