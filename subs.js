@@ -220,6 +220,8 @@
     var subtitle = new DOMParser().parseFromString(window.Lampa.Template.all().player_video, "text/html").querySelector('.player-video__subtitles').cloneNode(true);
     subtitle.classList.add('on-top');
     subtitle.classList.remove('hide');
+
+    subtitle.classList.add('has--backdrop');
     // var player = new DOMParser().parseFromString(window.Lampa.Template.all().player_video, "text/html").querySelector('.player-video').cloneNode(true)
 
     // /*!!!!!*/
